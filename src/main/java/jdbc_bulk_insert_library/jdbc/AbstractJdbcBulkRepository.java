@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractJdbcBulkRepository<T> implements BulkRepository<T> {
@@ -16,18 +17,13 @@ public abstract class AbstractJdbcBulkRepository<T> implements BulkRepository<T>
     }
 
     @Override
-    public final void saveAllInBatch(int batchSize,Map<String, Object> params) {
-        this.jdbcTemplate.batchUpdate(getInsertSql(), new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                setParameters(ps,params);
-            }
+    public final void saveAllInBatch(List<Map<String, Object>> batchParams) {
+        String sql = getInsertSql();
 
-            @Override
-            public int getBatchSize() {
-                return batchSize;
-            }
-        });
+        this.jdbcTemplate.batchUpdate(sql,
+                batchParams,
+                batchParams.size(),
+                (ps, params) -> setParameters(ps, params));
     }
 
     protected abstract String getInsertSql();

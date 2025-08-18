@@ -13,7 +13,9 @@ public class BulkRepositoryExecutor {
     private final List<BulkRepository<?>> bulkRepositories;
 
     @Transactional
-    public <T> void execute(Class<T> entityType, int totalSize,int batchSize,Map<String, Object> params) {
+    public <T> void execute(Class<T> entityType,int batchSize,List<Map<String, Object>> params) {
+        int totalSize = params.size();
+
         if (totalSize <= 0) {
             return;
         }
@@ -21,8 +23,9 @@ public class BulkRepositoryExecutor {
         BulkRepository<T> targetRepository = findTargetRepository(entityType);
 
         for (int i = 0; i < totalSize; i += batchSize) {
-            int currentBatchSize = Math.min(batchSize, totalSize - i);
-            targetRepository.saveAllInBatch(currentBatchSize, params);
+            int end = Math.min(i + batchSize, totalSize);
+            List<Map<String, Object>> batchParams = params.subList(i, end);
+            targetRepository.saveAllInBatch(batchParams);
         }
     }
 
