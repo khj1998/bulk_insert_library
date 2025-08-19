@@ -1,8 +1,8 @@
 package jdbc_bulk_insert_library.jdbc;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -34,6 +34,6 @@ public class BulkRepositoryExecutor {
         return (BulkRepository<T>) bulkRepositories.stream()
                 .filter(bulkRepository -> bulkRepository.getSupportedType().equals(entityType))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("지원하는 BulkRepository를 찾을 수 없습니다: " + entityType.getSimpleName()));
+                .orElseThrow(() -> new IllegalArgumentException("Unsupported entity type: " + entityType.getSimpleName()));
     }
 }
