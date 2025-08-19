@@ -1,6 +1,5 @@
 package jdbc_bulk_insert_library.jdbc;
 
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.PreparedStatement;
